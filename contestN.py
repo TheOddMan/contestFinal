@@ -5,7 +5,6 @@ import os
 from keras.models import Sequential
 from keras.layers import Dense,Dropout,Flatten,CuDNNLSTM,LSTM
 from keras.models import load_model
-import matplotlib.pyplot as plt
 import numpy
 import keras.backend as K
 import sys
@@ -160,17 +159,16 @@ def BuildModel_CPU(lr):
     return model
 #====================================================================
 
-def Curve_of_training(losstraining,epochs):
+# def Curve_of_training(losstraining,epochs):
 
-    losstraing = numpy.array(losstraining).astype('float32')
-    # lossvalidation = numpy.array(lossvalidation).astype('float32')
-    x = numpy.linspace(1,epochs,epochs)
-    plt.title('contestN1 plt')
-    plt.plot(x,losstraing,label='loss')
+    # losstraing = numpy.array(losstraining).astype('float32')
+    # x = numpy.linspace(1,epochs,epochs)
+    # plt.title('contestN1 plt')
+    # plt.plot(x,losstraing,label='loss')
     # plt.plot(x,lossvalidation,label='val_loss')
-    import datetime
-    plt.savefig('fig_' + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))
-    plt.show()
+    # import datetime
+    # plt.savefig('fig_' + datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))
+    # plt.show()
 
 #==================================================================== training
 
@@ -193,6 +191,8 @@ def trainingModel(training_data,training_label,epochs,lr,save_model_name,save_we
         history = model.fit(training_data, training_label, epochs=1, batch_size=1, verbose=1, shuffle=False)
 
         if i ==0:
+            model.save(save_model_name)
+            model.save_weights(save_weight_name)
             pass
         elif i>0:
          if history.history['loss'][0] < min(losstraing):
@@ -210,7 +210,7 @@ def trainingModel(training_data,training_label,epochs,lr,save_model_name,save_we
 
         model.reset_states()
 
-    Curve_of_training(losstraing,epochs)
+    # Curve_of_training(losstraing,epochs)
 
 
 
@@ -227,65 +227,65 @@ def reverse_NegativeOne_to_One(prediction_value,real_value):
 
 
 
-def Curve_of_Prediction(Minimumloss,predictions,real_value_NegativeOne_to_One,real_value_original_domain,data_amount,epochs,lr):
-
-    x_axis = numpy.linspace(1, data_amount, data_amount)
-
-    predictions = predictions.ravel()
-    real_value_original_domain = real_value_original_domain.ravel()
-
-
-    reverse_predictions = reverse_NegativeOne_to_One(prediction_value=predictions,real_value=real_value_original_domain)
-
-    real_value_NegativeOne_to_One = real_value_NegativeOne_to_One.ravel()
-
-    error_of_P_and_R = real_value_NegativeOne_to_One-predictions
-
-    RMSE_All_NegativeOne_to_One = numpy.sqrt(numpy.mean((predictions[:]-real_value_NegativeOne_to_One[:])**2))
-    RMSE_TOP30_NegativeOne_to_One = numpy.sqrt(numpy.mean((predictions[:30]-real_value_NegativeOne_to_One[:30])**2))
-    RMSE_LAST10_NegativeOne_to_One = numpy.sqrt(numpy.mean((predictions[-10:]-real_value_NegativeOne_to_One[-10:])**2))
-
-
-
-    RMSE_All_Original_Domain = numpy.sqrt(numpy.mean((reverse_predictions[:]-real_value_original_domain[:])**2))
-    RMSE_TOP30_Original_Domain = numpy.sqrt(numpy.mean((reverse_predictions[:30]-real_value_original_domain[:30])**2))
-    RMSE_LAST10_Original_Domain = numpy.sqrt(numpy.mean((reverse_predictions[-10:]-real_value_original_domain[-10:])**2))
-
-    plt.figure(1,figsize=(20,10))
-    sub1 = plt.subplot(221)
-    sub1.set_title("Epochs : "+str(epochs) + "     LR : "+str(lr) + "\n Minimumloss : " + str(Minimumloss) +"  SavedEpochs : "+str(ThatEpochs))
-    plt.plot(x_axis, predictions, label='predictions')
-    plt.plot(x_axis, real_value_NegativeOne_to_One, label='real_value_of_-1_to_1')
-    plt.legend()
-
-    sub2 = plt.subplot(222)
-    sub2.set_title('RMSE_All : ' + str(RMSE_All_NegativeOne_to_One) + "\n" + "RMSE_TOP30 : " + str(RMSE_TOP30_NegativeOne_to_One) + "    " + "RMSE_LAST10 : " + str(RMSE_LAST10_NegativeOne_to_One))
-    plt.ylim(-1, 1)
-    plt.plot(x_axis, error_of_P_and_R, label='error_of_-1_to_1')
-    plt.legend()
-
-    plt.subplot(223)
-    plt.plot(x_axis, reverse_predictions, label='reversed_prediction')
-    plt.plot(x_axis, real_value_original_domain, label='real_value_original_domain')
-    plt.legend()
-
-    error_of_P_and_R_origin_domain = real_value_original_domain - reverse_predictions
-
-    sub4 = plt.subplot(224)
-    sub4.set_title("RMSE_All : "+str(RMSE_All_Original_Domain)+"\n"+"RMSE_TOP30 : "+str(RMSE_TOP30_Original_Domain)+"    RMSE_LAST10 : "+str(RMSE_LAST10_Original_Domain))
-    plt.ylim(-1, 1)
-    plt.plot(x_axis, error_of_P_and_R_origin_domain, label='error_of_original_domain')
-    plt.legend()
-    import datetime
-    plt.savefig('fig_'+datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))
-    plt.show()
+# def Curve_of_Prediction(Minimumloss,predictions,real_value_NegativeOne_to_One,real_value_original_domain,data_amount,epochs,lr):
+#
+#     x_axis = numpy.linspace(1, data_amount, data_amount)
+#
+#     predictions = predictions.ravel()
+#     real_value_original_domain = real_value_original_domain.ravel()
+#
+#
+#     reverse_predictions = reverse_NegativeOne_to_One(prediction_value=predictions,real_value=real_value_original_domain)
+#
+#     real_value_NegativeOne_to_One = real_value_NegativeOne_to_One.ravel()
+#
+#     error_of_P_and_R = real_value_NegativeOne_to_One-predictions
+#
+#     RMSE_All_NegativeOne_to_One = numpy.sqrt(numpy.mean((predictions[:]-real_value_NegativeOne_to_One[:])**2))
+#     RMSE_TOP30_NegativeOne_to_One = numpy.sqrt(numpy.mean((predictions[:30]-real_value_NegativeOne_to_One[:30])**2))
+#     RMSE_LAST10_NegativeOne_to_One = numpy.sqrt(numpy.mean((predictions[-10:]-real_value_NegativeOne_to_One[-10:])**2))
+#
+#
+#
+#     RMSE_All_Original_Domain = numpy.sqrt(numpy.mean((reverse_predictions[:]-real_value_original_domain[:])**2))
+#     RMSE_TOP30_Original_Domain = numpy.sqrt(numpy.mean((reverse_predictions[:30]-real_value_original_domain[:30])**2))
+#     RMSE_LAST10_Original_Domain = numpy.sqrt(numpy.mean((reverse_predictions[-10:]-real_value_original_domain[-10:])**2))
+#
+#     plt.figure(1,figsize=(20,10))
+#     sub1 = plt.subplot(221)
+#     sub1.set_title("Epochs : "+str(epochs) + "     LR : "+str(lr) + "\n Minimumloss : " + str(Minimumloss) +"  SavedEpochs : "+str(ThatEpochs))
+#     plt.plot(x_axis, predictions, label='predictions')
+#     plt.plot(x_axis, real_value_NegativeOne_to_One, label='real_value_of_-1_to_1')
+#     plt.legend()
+#
+#     sub2 = plt.subplot(222)
+#     sub2.set_title('RMSE_All : ' + str(RMSE_All_NegativeOne_to_One) + "\n" + "RMSE_TOP30 : " + str(RMSE_TOP30_NegativeOne_to_One) + "    " + "RMSE_LAST10 : " + str(RMSE_LAST10_NegativeOne_to_One))
+#     plt.ylim(-1, 1)
+#     plt.plot(x_axis, error_of_P_and_R, label='error_of_-1_to_1')
+#     plt.legend()
+#
+#     plt.subplot(223)
+#     plt.plot(x_axis, reverse_predictions, label='reversed_prediction')
+#     plt.plot(x_axis, real_value_original_domain, label='real_value_original_domain')
+#     plt.legend()
+#
+#     error_of_P_and_R_origin_domain = real_value_original_domain - reverse_predictions
+#
+#     sub4 = plt.subplot(224)
+#     sub4.set_title("RMSE_All : "+str(RMSE_All_Original_Domain)+"\n"+"RMSE_TOP30 : "+str(RMSE_TOP30_Original_Domain)+"    RMSE_LAST10 : "+str(RMSE_LAST10_Original_Domain))
+#     plt.ylim(-1, 1)
+#     plt.plot(x_axis, error_of_P_and_R_origin_domain, label='error_of_original_domain')
+#     plt.legend()
+#     import datetime
+#     plt.savefig('fig_'+datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S"))
+#     plt.show()
 
 
 def Predict_model(Minimumloss,testing_data,real_value_NegativeOne_to_One,real_value_original_domain,model_name,data_amount,epochs,lr):
     model = load_model(model_name,custom_objects={ 'root_mean_squared_error':root_mean_squared_error })
     model.compile(loss=root_mean_squared_error, optimizer='adam')
     predictions = model.predict(testing_data,batch_size=1)
-    Curve_of_Prediction(Minimumloss=Minimumloss,predictions=predictions,real_value_NegativeOne_to_One=real_value_NegativeOne_to_One,real_value_original_domain=real_value_original_domain,data_amount=data_amount,epochs=epochs,lr=lr)
+    # Curve_of_Prediction(Minimumloss=Minimumloss,predictions=predictions,real_value_NegativeOne_to_One=real_value_NegativeOne_to_One,real_value_original_domain=real_value_original_domain,data_amount=data_amount,epochs=epochs,lr=lr)
 
 
 

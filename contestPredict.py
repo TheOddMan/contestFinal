@@ -12,7 +12,7 @@ from keras.layers import Dense,Dropout,Flatten
 from keras.layers import LSTM
 from keras.models import load_model
 from math import sqrt
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 import numpy
 import keras.backend as K
 
@@ -127,19 +127,19 @@ x_axis_for_test = numpy.linspace(1,40,40)
 
 predictions = predictions.ravel()
 y_test = y_test.ravel()
-plt.plot(x_axis,predictions,label='predictions')
+# plt.plot(x_axis,predictions,label='predictions')
 # plt.plot(x_axis_for_test,y_test,label='realvalue')
-plt.legend()
-plt.show()
+# plt.legend()
+# plt.show()
 
 ans2d = ans2d.ravel()
 
 predictions_rev = reverse_NegativeOne_to_One(prediction_value=predictions,real_value=ans2d)
 
 
-plt.plot(x_axis,predictions_rev,label='predictions')
+# plt.plot(x_axis,predictions_rev,label='predictions')
 # plt.plot(x_axis_for_test,ans2d,label='realvalue')
-plt.legend()
-plt.show()
+# plt.legend()
+# plt.show()
 
 print(predictions_rev[:])
